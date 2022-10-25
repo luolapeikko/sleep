@@ -1,4 +1,6 @@
-# sleep promise with optional abort signal support (works on both browser and node with node-abort-controller module)
+# sleep promise with abort support
+
+## should work on both browser and node with node-abort-controller module
 
 ```typescript
 await sleep(1000); // plain sleep
