@@ -1,4 +1,4 @@
-# sleep promise with abort support
+# Sleep promise with Abort support
 
 ## should work on both browser and node with node-abort-controller module
 
