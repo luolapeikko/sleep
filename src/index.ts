@@ -16,7 +16,7 @@ export class SleepAbortError extends Error {
  * await sleep(1000, {signal: controller.signal}); // sleep with abort signal
  * @param ms milliseconds to sleep
  * @param {AbortSignal} options.signal optional AbortSignal to abort sleep
- * @param {boolean} options.abortThrows if true, throw an error when aborted
+ * @param {boolean} options.abortThrows if true, throw an error when aborted (default just resolves)
  * @returns {Promise<void>} sleep Promise
  * @throws {SleepAbortError} if options.abortThrows is true and the signal is aborted
  */
