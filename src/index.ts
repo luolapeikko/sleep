@@ -1,5 +1,3 @@
-import {AbortSignal as NodeAbortSignal} from 'node-abort-controller';
-
 export class SleepAbortError extends Error {
 	constructor(message?: string) {
 		super(message);
@@ -20,7 +18,7 @@ export class SleepAbortError extends Error {
  * @returns {Promise<void>} sleep Promise
  * @throws {SleepAbortError} if options.abortThrows is true and the signal is aborted
  */
-export function sleep(ms: number, options?: {signal?: AbortSignal | NodeAbortSignal; abortThrows?: boolean}): Promise<void> {
+export function sleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: boolean}): Promise<void> {
 	// break out early if signal is already aborted
 	if (options?.signal?.aborted) {
 		if (options.abortThrows) {
@@ -32,7 +30,7 @@ export function sleep(ms: number, options?: {signal?: AbortSignal | NodeAbortSig
 		let timeoutRef: ReturnType<typeof setTimeout> | undefined;
 		if (options?.signal) {
 			// build abort function to be called on signal abort
-			options.signal.onabort = () => {
+			options.signal.onabort = (): void => {
 				if (timeoutRef) {
 					clearTimeout(timeoutRef);
 					timeoutRef = undefined;
