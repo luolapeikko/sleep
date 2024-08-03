@@ -2,15 +2,16 @@
     "name": "@avanio/sleep",
     "version": "0.0.3",
     "description": "Sleep promise with Abort support",
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
+    "type": "module",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
-      ".": {
-        "require": "./dist/index.js",
-        "import": "./dist/index.mjs",
-        "types": "./dist/index.d.ts"
-      }
+        ".": {
+            "require": "./dist/index.cjs",
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
     },
     "scripts": {
         "build": "tsup src/index.ts --sourcemap --format cjs,esm --dts --clean",
@@ -29,9 +30,9 @@
         "recursive": true,
         "enable-source-maps": true,
         "require": [
-            "ts-node/register",
-            "source-map-support/register"
+            "ts-node/register"
         ],
+        "loader": "ts-node/esm",
         "reporters": [
             "spec",
             "mocha-junit-reporter"
@@ -78,8 +79,8 @@
         "@types/node": "^18.19.43",
         "@typescript-eslint/eslint-plugin": "^8.0.0",
         "@typescript-eslint/parser": "^8.0.0",
-        "chai": "^4.5.0",
-        "chai-as-promised": "^7.1.2",
+        "chai": "^5.1.1",
+        "chai-as-promised": "^8.0.0",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-config-standard": "^17.1.0",

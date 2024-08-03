@@ -1,31 +1,30 @@
 {
 	"compilerOptions": {
-	  "module": "es2015",
-	  "target": "es2015",
-	  "lib": ["es2017", "dom"],
-	  "rootDir": "./src",
-	  "outDir": "./dist",
-	  "moduleResolution": "node",
-	  "sourceRoot": "./src",
-	  "types": ["node"],
-	  "strict": true,
-	  "declaration": true,
-	  "removeComments": false,
-	  "inlineSources": false,
-	  "inlineSourceMap": true,
-	  "forceConsistentCasingInFileNames": true,
-	  "noImplicitReturns": true,
-	  "noImplicitThis": true,
-	  "noImplicitAny": true,
-	  "importHelpers": false,
-	  "strictNullChecks": true,
-	  "noUnusedLocals": true,
-	  "esModuleInterop": true,
+		"module": "NodeNext",
+		"target": "es2017",
+		"lib": ["es2017", "dom"],
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"moduleResolution": "NodeNext",
+		"sourceRoot": "./src",
+		"types": ["node"],
+		"strict": true,
+		"declaration": true,
+		"removeComments": false,
+		"inlineSources": false,
+		"inlineSourceMap": true,
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noImplicitAny": true,
+		"importHelpers": false,
+		"strictNullChecks": true,
+		"noUnusedLocals": true,
+		"esModuleInterop": true
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": [
-		"test/*",
-		"dist/*",
-		"node_modules/*"
-	]
- }
+	"include": ["src/"],
+	"exclude": ["test/", "dist/", "node_modules/"],
+	"ts-node": {
+		"esm": true
+	}
+}

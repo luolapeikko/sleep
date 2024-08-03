@@ -1,9 +1,8 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "module": "commonjs",
-    "rootDir": "./",
-  },
-  "include": ["test/**/*.ts", "src/**/*.ts"],
-	"exclude": ["dist/*", "node_modules/*"],
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"rootDir": "./"
+	},
+	"include": ["test/", "src/"],
+	"exclude": ["dist/", "node_modules/"]
 }

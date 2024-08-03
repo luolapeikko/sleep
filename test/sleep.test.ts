@@ -1,6 +1,6 @@
 import 'mocha';
 import * as chai from 'chai';
-import {sleep, SleepAbortError} from '../src/';
+import {sleep, SleepAbortError} from '../src/index.js';
 import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
