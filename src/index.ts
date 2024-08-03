@@ -33,9 +33,16 @@ export function sleep(ms: number, options?: {signal?: AbortSignal; abortThrows?:
 	return handleSleep(ms, options);
 }
 
+export function clearEventListener(signal: AbortSignal | undefined, onAbortCallback?: () => void): void {
+	if (signal && onAbortCallback) {
+		signal.removeEventListener('abort', onAbortCallback);
+	}
+}
+
 function handleSleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: boolean}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		let timeoutRef: ReturnType<typeof setTimeout> | undefined;
+		let isCallbackAborted = false;
 		let onAbortCallback: (() => void) | undefined;
 		if (options?.signal) {
 			onAbortCallback = () => {
@@ -48,17 +55,19 @@ function handleSleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: 
 				} else {
 					resolve();
 				}
+				// remove the abort listener
+				clearEventListener(options.signal, onAbortCallback);
+				onAbortCallback = undefined;
+				isCallbackAborted = true;
 			};
 			// build abort function to be called on signal abort
 			options.signal.addEventListener('abort', onAbortCallback);
 		}
 		timeoutRef = setTimeout(() => {
 			timeoutRef = undefined;
-			if (options?.signal && onAbortCallback) {
-				options.signal.removeEventListener('abort', onAbortCallback);
-			}
-			if (options?.signal?.aborted) {
-				// we use abort "onabort" callback to reject the promise
+			clearEventListener(options?.signal, onAbortCallback);
+			if (isCallbackAborted) {
+				// we already handled the abort, so just return from timeout
 				return;
 			}
 			resolve();
