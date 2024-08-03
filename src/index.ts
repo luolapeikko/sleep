@@ -30,6 +30,10 @@ export function sleep(ms: number, options?: {signal?: AbortSignal; abortThrows?:
 	if (options?.signal?.aborted) {
 		return handleAbort(options.abortThrows);
 	}
+	return handleSleep(ms, options);
+}
+
+function handleSleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: boolean}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		let timeoutRef: ReturnType<typeof setTimeout> | undefined;
 		let onAbortCallback: (() => void) | undefined;
