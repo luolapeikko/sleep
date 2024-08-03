@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-	  "module": "commonjs",
-	  "target": "es6",
+	  "module": "es2015",
+	  "target": "es2015",
 	  "lib": ["es2017", "dom"],
 	  "rootDir": "./src",
 	  "outDir": "./dist",
@@ -20,6 +20,7 @@
 	  "importHelpers": false,
 	  "strictNullChecks": true,
 	  "noUnusedLocals": true,
+	  "esModuleInterop": true,
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": [

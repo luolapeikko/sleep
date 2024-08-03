@@ -6,6 +6,13 @@ export class SleepAbortError extends Error {
 	}
 }
 
+function handleAbort(abortThrows?: boolean): Promise<void> {
+	if (abortThrows) {
+		return Promise.reject(new SleepAbortError('Aborted'));
+	}
+	return Promise.resolve();
+}
+
 /**
  * sleep for a number of milliseconds and optional abort signaling to break sleep early
  * @example
@@ -21,10 +28,7 @@ export class SleepAbortError extends Error {
 export function sleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: boolean}): Promise<void> {
 	// break out early if signal is already aborted
 	if (options?.signal?.aborted) {
-		if (options.abortThrows) {
-			return Promise.reject(new SleepAbortError('Aborted'));
-		}
-		return Promise.resolve();
+		return handleAbort(options.abortThrows);
 	}
 	return new Promise((resolve, reject) => {
 		let timeoutRef: ReturnType<typeof setTimeout> | undefined;
@@ -35,7 +39,7 @@ export function sleep(ms: number, options?: {signal?: AbortSignal; abortThrows?:
 					clearTimeout(timeoutRef);
 					timeoutRef = undefined;
 				}
-				if (options?.abortThrows) {
+				if (options.abortThrows) {
 					reject(new SleepAbortError('Aborted'));
 				} else {
 					resolve();
