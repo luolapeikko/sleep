@@ -57,4 +57,16 @@ describe('sleep', () => {
 			expect(time).to.be.greaterThanOrEqual(100).and.lessThan(150);
 		});
 	});
+	describe('multiple sleeps on same signal', () => {
+		it('should abort both sleep promises', async function () {
+			this.timeout(500);
+			this.slow(400);
+			const abortController = new AbortController();
+			const value1Promise = sleep(1000, {signal: abortController.signal});
+			const value2Promise = sleep(1000, {signal: abortController.signal});
+			setTimeout(() => abortController.abort(), 100);
+			await expect(value1Promise).to.be.eventually.eq(undefined);
+			await expect(value2Promise).to.be.eventually.eq(undefined);
+		});
+	});
 });
