@@ -1,6 +1,6 @@
 {
     "name": "@avanio/sleep",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Sleep promise with Abort support",
     "type": "module",
     "main": "./dist/index.cjs",
