@@ -14,7 +14,7 @@
 		"plugin:prettier/recommended",
 		"plugin:sonarjs/recommended"
 	],
-    "rules": {
+	"rules": {
 		"camelcase": 1,
 		"@typescript-eslint/no-this-alias": [
 			"warn",
@@ -59,6 +59,7 @@
 			}
 		],
 		"@typescript-eslint/unbound-method": "off",
-		"@typescript-eslint/no-confusing-void-expression": "off"
-    }
+		"@typescript-eslint/no-confusing-void-expression": "off",
+		"@typescript-eslint/no-invalid-void-type": "off"
+	}
 }
