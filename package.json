@@ -1,6 +1,6 @@
 {
     "name": "@avanio/sleep",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Sleep promise with Abort support",
     "type": "module",
     "types": "./dist/index.d.ts",
