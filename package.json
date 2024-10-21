@@ -97,6 +97,6 @@
         "typescript": "^5.5.4"
     },
     "dependencies": {
-        "@luolapeikko/result-option": "^0.6.0"
+        "@luolapeikko/result-option": "^1.0.3"
     }
 }

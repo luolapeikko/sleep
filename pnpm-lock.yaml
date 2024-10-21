@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@luolapeikko/result-option':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^1.0.3
+        version: 1.0.3
     devDependencies:
       '@stylistic/eslint-plugin':
         specifier: ^2.6.4
@@ -371,8 +371,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@luolapeikko/result-option@0.6.0':
-    resolution: {integrity: sha512-vb9z9y89hN4PtpkuGIcWwlUui1me1tkHN9y9z7E5lryZ0u9+eHnGb8u0NUdFDHgEpENtbfDPgk90yQjC/qkzoQ==}
+  '@luolapeikko/result-option@1.0.3':
+    resolution: {integrity: sha512-Quq+b6ERUIwCIVvfSW+QQ6w+CNjb2IUkkitAWgpfbBNFrelJV0cI21AlGo6HAcTneNznnoW5To+gxxtLytod+A==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2564,7 +2564,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@luolapeikko/result-option@0.6.0': {}
+  '@luolapeikko/result-option@1.0.3': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

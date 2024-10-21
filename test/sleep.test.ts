@@ -3,7 +3,7 @@ import 'mocha';
 import * as chai from 'chai';
 import {sleep, SleepAbortError, sleepResult} from '../src/index.js';
 import chaiAsPromised from 'chai-as-promised';
-import {type Result} from '@luolapeikko/result-option';
+import {type IResult} from '@luolapeikko/result-option';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -79,7 +79,7 @@ describe('sleep-utils', () => {
 				this.slow(120);
 				this.timeout(190);
 				const start = new Date().getTime();
-				const res: Result<void, TypeError> = await sleepResult(100);
+				const res: IResult<void, TypeError> = await sleepResult(100);
 				const time = new Date().getTime() - start;
 				expect(time).to.be.greaterThanOrEqual(100);
 				expect(res.isOk).to.be.eq(true);
@@ -90,7 +90,7 @@ describe('sleep-utils', () => {
 				const controller = new AbortController();
 				controller.abort();
 				const start = new Date().getTime();
-				const res: Result<void, TypeError> = await sleepResult(100, {signal: controller.signal});
+				const res: IResult<void, TypeError> = await sleepResult(100, {signal: controller.signal});
 				const time = new Date().getTime() - start;
 				expect(time).to.be.lessThanOrEqual(10);
 				expect(res.isOk).to.be.eq(true);
@@ -102,7 +102,7 @@ describe('sleep-utils', () => {
 				const controller = new AbortController();
 				const start = new Date().getTime();
 				setTimeout(() => controller.abort(), 100);
-				const res: Result<void, TypeError> = await sleepResult(200, {signal: controller.signal});
+				const res: IResult<void, TypeError> = await sleepResult(200, {signal: controller.signal});
 				const time = new Date().getTime() - start;
 				expect(time).to.be.greaterThanOrEqual(100).and.lessThan(150);
 				expect(res.isOk).to.be.eq(true);
@@ -115,7 +115,7 @@ describe('sleep-utils', () => {
 				const controller = new AbortController();
 				controller.abort();
 				const start = new Date().getTime();
-				const res: Result<void, TypeError | SleepAbortError> = await sleepResult(100, {signal: controller.signal, abortThrows: true});
+				const res: IResult<void, TypeError | SleepAbortError> = await sleepResult(100, {signal: controller.signal, abortThrows: true});
 				expect(() => res.unwrap()).to.throw(SleepAbortError, 'Aborted');
 				const time = new Date().getTime() - start;
 				expect(time).to.be.lessThanOrEqual(10);
@@ -128,7 +128,7 @@ describe('sleep-utils', () => {
 				const controller = new AbortController();
 				const start = new Date().getTime();
 				setTimeout(() => controller.abort('with a reason'), 100);
-				const res: Result<void, TypeError | SleepAbortError> = await sleepResult(200, {signal: controller.signal, abortThrows: true});
+				const res: IResult<void, TypeError | SleepAbortError> = await sleepResult(200, {signal: controller.signal, abortThrows: true});
 				expect(() => res.unwrap()).to.throw(SleepAbortError, 'Aborted');
 				const time = new Date().getTime() - start;
 				expect(time).to.be.greaterThanOrEqual(100).and.lessThan(150);
@@ -146,8 +146,8 @@ describe('sleep-utils', () => {
 				this.timeout(500);
 				this.slow(400);
 				const abortController = new AbortController();
-				const value1ResPromise: Promise<Result<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
-				const value2ResPromise: Promise<Result<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
+				const value1ResPromise: Promise<IResult<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
+				const value2ResPromise: Promise<IResult<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
 				setTimeout(() => abortController.abort(), 100);
 				const value1Res = await value1ResPromise;
 				const value2Res = await value2ResPromise;
