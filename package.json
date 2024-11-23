@@ -2,57 +2,23 @@
     "name": "@avanio/sleep",
     "version": "0.1.4",
     "description": "Sleep promise with Abort support",
-    "type": "module",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
     "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "require": "./dist/index.cjs",
-            "import": "./dist/index.js"
-        }
+      ".": {
+        "types": "./dist/index.d.ts",
+        "require": "./dist/index.js",
+        "import": "./dist/index.mjs"
+      }
     },
     "scripts": {
         "build": "tsup src/index.ts --sourcemap --format cjs,esm --dts --clean",
         "validate": "tsc --noEmit --project tsconfig.test.json",
         "prepublishOnly": "npm run build",
-        "test": "mocha",
-        "coverage": "nyc mocha",
+        "test": "vitest test --run --no-isolate --coverage",
+        "coverage": "vitest test --run --no-isolate --reporter=dot --coverage --coverage.reporter=lcov",
         "lint": "eslint . --ext .ts"
-    },
-    "mocha": {
-        "exit": true,
-        "extension": [
-            "ts",
-            "js"
-        ],
-        "recursive": true,
-        "enable-source-maps": true,
-        "require": [
-            "ts-node/register"
-        ],
-        "loader": "ts-node/esm",
-        "reporters": [
-            "spec",
-            "mocha-junit-reporter"
-        ]
-    },
-    "nyc": {
-        "extension": [
-            ".ts"
-        ],
-        "include": [
-            "src"
-        ],
-        "reporter": [
-            "text",
-            "lcovonly"
-        ],
-        "all": true,
-        "require": [
-            "ts-node/register"
-        ]
     },
     "files": [
         "dist"
@@ -72,31 +38,29 @@
     },
     "homepage": "https://github.com/AvanioOy/sleep#readme",
     "devDependencies": {
-        "@stylistic/eslint-plugin": "^2.6.4",
-        "@types/chai": "^4.3.17",
-        "@types/chai-as-promised": "^7.1.8",
-        "@types/mocha": "^10.0.7",
-        "@types/node": "^18.19.45",
-        "@typescript-eslint/eslint-plugin": "^8.2.0",
-        "@typescript-eslint/parser": "^8.2.0",
-        "chai": "^5.1.1",
-        "chai-as-promised": "^8.0.0",
-        "eslint": "^8.57.0",
+        "@luolapeikko/result-option": "^1.0.3",
+        "@stylistic/eslint-plugin": "^2.11.0",
+        "@stylistic/eslint-plugin-ts": "^2.11.0",
+        "@types/node": "^18.19.65",
+        "@typescript-eslint/eslint-plugin": "^8.15.0",
+        "@typescript-eslint/parser": "^8.15.0",
+        "@vitest/coverage-v8": "^2.1.5",
+        "c8": "^10.1.2",
+        "eslint": "^8.57.1",
         "eslint-config-prettier": "^9.1.0",
         "eslint-config-standard": "^17.1.0",
-        "eslint-import-resolver-typescript": "^3.6.1",
+        "eslint-import-resolver-typescript": "^3.6.3",
         "eslint-plugin-deprecation": "^3.0.0",
         "eslint-plugin-prettier": "^5.2.1",
         "eslint-plugin-sonarjs": "^0.23.0",
-        "mocha": "^10.7.3",
-        "nyc": "^17.0.0",
         "prettier": "^3.3.3",
         "source-map-support": "^0.5.21",
-        "ts-node": "^10.9.2",
-        "tsup": "^8.2.4",
-        "typescript": "^5.5.4"
+        "tsup": "^8.3.5",
+        "typescript": "^5.7.2",
+        "vite": "^5.4.11",
+        "vitest": "^2.1.5"
     },
-    "dependencies": {
-        "@luolapeikko/result-option": "^1.0.3"
+    "peerDependencies": {
+        "@luolapeikko/result-option": "^1.0"
     }
 }

@@ -16,6 +16,7 @@ import {sleep} from './sleep.js';
  * @param {SleepOptions} options options object
  * @returns {Promise<void>} - resolves after sleep or abort
  * @throws {SleepAbortError} if options.abortThrows is true and the signal is aborted
+ * @since v0.1.3
  */
 export async function sleepResult(ms: number, options: SleepThrowsOptions): Promise<IResult<void, SleepAbortError | TypeError>>;
 export async function sleepResult(ms: number, options?: SleepOptions): Promise<IResult<void, TypeError>>;

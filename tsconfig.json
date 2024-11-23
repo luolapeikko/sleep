@@ -20,7 +20,8 @@
 		"importHelpers": false,
 		"strictNullChecks": true,
 		"noUnusedLocals": true,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"skipLibCheck": true
 	},
 	"include": ["src/"],
 	"exclude": ["test/", "dist/", "node_modules/"],

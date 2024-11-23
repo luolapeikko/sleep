@@ -60,6 +60,7 @@ function handleSleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: 
  * @param {SleepOptions} options options object
  * @returns {Promise<void>} - resolves after sleep or abort
  * @throws {SleepAbortError} if options.abortThrows is true and the signal is aborted
+ * @since v0.0.1
  */
 export function sleep(ms: number, options?: SleepOptions): Promise<void> {
 	if (typeof ms !== 'number') {
