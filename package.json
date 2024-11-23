@@ -1,16 +1,16 @@
 {
     "name": "@avanio/sleep",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Sleep promise with Abort support",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "require": "./dist/index.js",
-        "import": "./dist/index.mjs"
-      }
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.js",
+            "import": "./dist/index.mjs"
+        }
     },
     "scripts": {
         "build": "tsup src/index.ts --sourcemap --format cjs,esm --dts --clean",
