@@ -1,5 +1,5 @@
 {
-    "name": "@avanio/sleep",
+    "name": "@luolapeikko/sleep",
     "version": "0.1.5",
     "description": "Sleep promise with Abort support",
     "main": "./dist/index.js",
@@ -25,7 +25,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/AvanioOy/sleep.git"
+        "url": "git+https://github.com/luolapeikko/sleep.git"
     },
     "keywords": [
         "sleep",
@@ -34,9 +34,9 @@
     "author": "mharj",
     "license": "LGPL-3.0-or-later",
     "bugs": {
-        "url": "https://github.com/AvanioOy/sleep/issues"
+        "url": "https://github.com/luolapeikko/sleep/issues"
     },
-    "homepage": "https://github.com/AvanioOy/sleep#readme",
+    "homepage": "https://github.com/luolapeikko/sleep#readme",
     "devDependencies": {
         "@luolapeikko/result-option": "^1.0.5",
         "@stylistic/eslint-plugin": "^2.12.1",

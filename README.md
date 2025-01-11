@@ -5,7 +5,7 @@
 ### install
 
 ```
-npm i @avanio/sleep
+npm i @luolapeikko/sleep
 ```
 
 ### examples
