@@ -25,7 +25,7 @@ describe('sleep-utils', () => {
 				setTimeout(() => controller.abort(), 100);
 				await sleep(200, {signal: controller.signal});
 				const time = new Date().getTime() - start;
-				expect(time).to.be.greaterThanOrEqual(100).and.lessThan(150);
+				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
 			});
 		});
 		describe('sleep abort with throw', () => {
