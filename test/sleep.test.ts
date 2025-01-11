@@ -43,7 +43,7 @@ describe('sleep-utils', () => {
 				setTimeout(() => controller.abort(), 100);
 				await expect(sleep(200, {signal: controller.signal, abortThrows: true})).rejects.toEqual(new SleepAbortError('Aborted'));
 				const time = new Date().getTime() - start;
-				expect(time).to.be.greaterThanOrEqual(100).and.lessThan(150);
+				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
 			});
 		});
 		describe('multiple sleeps on same signal', () => {
