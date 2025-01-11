@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import {describe, expect, it} from 'vitest';
 import {sleep, SleepAbortError, sleepResult} from '../src/index.js';
 import {type IResult} from '@luolapeikko/result-option';
