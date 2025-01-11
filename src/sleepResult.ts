@@ -1,7 +1,7 @@
-import {buildError, type SleepAbortError} from './SleepAbortError.js';
 import {Err, type IResult, Ok} from '@luolapeikko/result-option';
-import {type SleepOptions, type SleepThrowsOptions} from './options.js';
-import {sleep} from './sleep.js';
+import {type SleepOptions, type SleepThrowsOptions} from './options';
+import {sleep} from './sleep';
+import {buildError, type SleepAbortError} from './SleepAbortError';
 
 /**
  * sleep for a number of milliseconds and optional abort signaling to break sleep early

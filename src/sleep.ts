@@ -1,5 +1,5 @@
-import {SleepAbortError} from './SleepAbortError.js';
-import {type SleepOptions} from './options.js';
+import {type SleepOptions} from './options';
+import {SleepAbortError} from './SleepAbortError';
 
 function handleAbort(abortThrows?: boolean, reason?: unknown): Promise<void> {
 	if (abortThrows) {

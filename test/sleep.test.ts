@@ -1,6 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import {sleep, SleepAbortError, sleepResult} from '../src/index.js';
 import {type IResult} from '@luolapeikko/result-option';
+import {describe, expect, it} from 'vitest';
+import {sleep, SleepAbortError, sleepResult} from '../src/index';
 
 describe('sleep-utils', () => {
 	describe('sleep', () => {
