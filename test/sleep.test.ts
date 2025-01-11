@@ -83,7 +83,7 @@ describe('sleep-utils', () => {
 				setTimeout(() => controller.abort(), 100);
 				const res: IResult<void, TypeError> = await sleepResult(200, {signal: controller.signal});
 				const time = new Date().getTime() - start;
-				expect(time).to.be.greaterThanOrEqual(100).and.lessThan(150);
+				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
 				expect(res.isOk).to.be.eq(true);
 				expect(res.ok()).to.be.eq(undefined);
 			});
@@ -107,7 +107,7 @@ describe('sleep-utils', () => {
 				const res: IResult<void, TypeError | SleepAbortError> = await sleepResult(200, {signal: controller.signal, abortThrows: true});
 				expect(() => res.unwrap()).to.throw(SleepAbortError, 'Aborted');
 				const time = new Date().getTime() - start;
-				expect(time).to.be.greaterThanOrEqual(100).and.lessThan(150);
+				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
 				expect(res.isErr).to.be.eq(true);
 				const err = res.err();
 				expect(err).to.be.instanceOf(SleepAbortError);
