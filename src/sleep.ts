@@ -1,13 +1,11 @@
 import {type SleepOptions} from './options';
 import {SleepAbortError} from './SleepAbortError';
 
-function handleAbort(abortThrows?: boolean, reason?: unknown): Promise<void> {
-	if (abortThrows) {
-		return Promise.reject(new SleepAbortError('Aborted', reason));
-	}
-	return Promise.resolve();
-}
-
+/**
+ * Removes the abort event listener from the AbortSignal.
+ * @param signal - AbortSignal to remove the event listener from.
+ * @param onAbortCallback - Callback to remove from the AbortSignal.
+ */
 function clearEventListener(signal: AbortSignal | undefined, onAbortCallback?: () => void): void {
 	if (signal && onAbortCallback) {
 		signal.removeEventListener('abort', onAbortCallback);
@@ -17,23 +15,24 @@ function clearEventListener(signal: AbortSignal | undefined, onAbortCallback?: (
 function handleSleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: boolean}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		let timeoutRef: ReturnType<typeof setTimeout> | undefined;
-		let isCallbackAborted = false;
 		let onAbortCallback: (() => void) | undefined;
 		if (options?.signal) {
+			// build abort function to be called on signal abort to settle Promise and clear timeout/event listener
 			onAbortCallback = () => {
+				// clear timeout callback if it exists.
 				if (timeoutRef) {
 					clearTimeout(timeoutRef);
 					timeoutRef = undefined;
 				}
+				// remove the abort listener and onAbortCallback reference
+				clearEventListener(options.signal, onAbortCallback);
+				onAbortCallback = undefined;
+				// we are done, handle Promise
 				if (options.abortThrows) {
-					reject(new SleepAbortError('Aborted', options.signal?.reason));
+					reject(new SleepAbortError('Aborted', {cause: options.signal?.reason}));
 				} else {
 					resolve();
 				}
-				// remove the abort listener
-				clearEventListener(options.signal, onAbortCallback);
-				onAbortCallback = undefined;
-				isCallbackAborted = true;
 			};
 			// build abort function to be called on signal abort
 			options.signal.addEventListener('abort', onAbortCallback);
@@ -41,11 +40,10 @@ function handleSleep(ms: number, options?: {signal?: AbortSignal; abortThrows?: 
 		timeoutRef = setTimeout(() => {
 			timeoutRef = undefined;
 			clearEventListener(options?.signal, onAbortCallback);
-			if (isCallbackAborted) {
-				// we already handled the abort, so just return from timeout
-				return;
+			// if not aborted, resolve Promise
+			if (!options?.signal?.aborted) {
+				resolve();
 			}
-			resolve();
 		}, ms);
 	});
 }
@@ -72,7 +70,7 @@ export function sleep(ms: number, options?: SleepOptions): Promise<void> {
 	}
 	// break out early if signal is already aborted
 	if (options?.signal?.aborted) {
-		return handleAbort(options.abortThrows, options.signal.reason);
+		return options.abortThrows ? Promise.reject(new SleepAbortError('Aborted', {cause: options.signal.reason})) : Promise.resolve();
 	}
 	return handleSleep(ms, options);
 }

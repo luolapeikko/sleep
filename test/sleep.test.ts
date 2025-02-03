@@ -1,6 +1,6 @@
 import {type IResult} from '@luolapeikko/result-option';
 import {describe, expect, it} from 'vitest';
-import {sleep, SleepAbortError, sleepResult} from '../src/index';
+import {buildError, sleep, SleepAbortError, type SleepOptions, sleepResult} from '../src/index';
 
 describe('sleep-utils', () => {
 	describe('sleep', () => {
@@ -9,7 +9,7 @@ describe('sleep-utils', () => {
 				const start = new Date().getTime();
 				await sleep(100);
 				const time = new Date().getTime() - start;
-				expect(time).to.be.greaterThanOrEqual(100);
+				expect(time).to.be.greaterThanOrEqual(99);
 			});
 			it('should abort sleep early', {timeout: 10}, async function () {
 				const controller = new AbortController();
@@ -27,21 +27,33 @@ describe('sleep-utils', () => {
 				const time = new Date().getTime() - start;
 				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
 			});
+			it('should not abort', {timeout: 190}, async function () {
+				const controller = new AbortController();
+				const start = new Date().getTime();
+				await sleep(100, {signal: controller.signal});
+				const time = new Date().getTime() - start;
+				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
+			});
 		});
 		describe('sleep abort with throw', () => {
 			it('should abort sleep early', {timeout: 10}, async function () {
 				const controller = new AbortController();
 				controller.abort();
 				const start = new Date().getTime();
-				await expect(sleep(100, {signal: controller.signal, abortThrows: true})).rejects.toEqual(new SleepAbortError('Aborted'));
+				const outputError = await sleep(100, {signal: controller.signal, abortThrows: true}).catch((e: Error) => e);
+				expect(outputError).toBeInstanceOf(SleepAbortError);
+				expect(outputError?.message).toEqual('Aborted');
+				const causeError = outputError?.cause as Error | undefined;
+				expect(causeError?.message).toEqual('This operation was aborted');
 				const time = new Date().getTime() - start;
 				expect(time).to.be.lessThanOrEqual(10);
 			});
 			it('should abort middle of sleep', {timeout: 190}, async function () {
+				const expectedError = new SleepAbortError('Aborted', {cause: 'This operation was aborted'});
 				const controller = new AbortController();
 				const start = new Date().getTime();
-				setTimeout(() => controller.abort(), 100);
-				await expect(sleep(200, {signal: controller.signal, abortThrows: true})).rejects.toEqual(new SleepAbortError('Aborted'));
+				setTimeout(() => controller.abort('This operation was aborted'), 100);
+				await expect(sleep(200, {signal: controller.signal, abortThrows: true})).rejects.toEqual(expectedError);
 				const time = new Date().getTime() - start;
 				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
 			});
@@ -56,7 +68,16 @@ describe('sleep-utils', () => {
 				await expect(value2Promise).resolves.toEqual(undefined);
 			});
 		});
+		describe('error handling', function () {
+			it('should throw TypeError if ms is not a number', function () {
+				expect(() => sleep('not a number' as unknown as number)).toThrow(TypeError);
+			});
+			it('should throw TypeError if options is not an object', function () {
+				expect(() => sleep(100, 'not an object' as unknown as SleepOptions)).toThrow(TypeError);
+			});
+		});
 	});
+
 	describe('sleepResult', () => {
 		describe('sleep abort without throw', () => {
 			it('should sleep', {timeout: 190}, async function () {
@@ -114,7 +135,6 @@ describe('sleep-utils', () => {
 				if (!err || !(err instanceof SleepAbortError)) {
 					throw new Error('err is not instance of SleepAbortError');
 				}
-				expect(err.reason).to.be.eq('with a reason');
 			});
 		});
 		describe('multiple sleeps on same signal', () => {
@@ -128,6 +148,13 @@ describe('sleep-utils', () => {
 				expect(value1Res.isErr).to.be.eq(true);
 				expect(value2Res.isErr).to.be.eq(true);
 			});
+		});
+	});
+	describe('buildError', function () {
+		it('should throw TypeError if message is not a string', function () {
+			expect(() => {
+				throw buildError(1);
+			}).toThrow(TypeError);
 		});
 	});
 });

@@ -2,8 +2,8 @@
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 2022,
-		"sourceType": "module",
-		"project": "./tsconfig.test.json"
+		"sourceType": "commonjs",
+		"project": "./tsconfig.json"
 	},
 	"plugins": ["@typescript-eslint", "@stylistic/ts", "import", "prettier", "sonarjs", "deprecation"],
 	"extends": [
@@ -26,6 +26,7 @@
 					"order": "asc",
 					"caseInsensitive": true
 				},
+				"named": true,
 				"newlines-between": "never"
 			}
 		],
@@ -68,6 +69,12 @@
 			}
 		],
 		"@typescript-eslint/consistent-type-imports": ["warn", {"prefer": "type-imports", "fixStyle": "inline-type-imports"}],
+		"@typescript-eslint/member-ordering": [
+			"warn",
+			{
+				"classes": ["static-field", "static-method", "field", "constructor", "public-method", "protected-method", "private-method", "#private-method"]
+			}
+		],
 		"@typescript-eslint/no-misused-promises": [
 			"error",
 			{
@@ -76,6 +83,20 @@
 		],
 		"@typescript-eslint/unbound-method": "off",
 		"@typescript-eslint/no-confusing-void-expression": "off",
-		"@typescript-eslint/no-invalid-void-type": "off"
-	}
+		"@typescript-eslint/no-invalid-void-type": "off",
+		"@typescript-eslint/no-unsafe-assignment": "off"
+	},
+	"overrides": [
+		{
+			"files": ["**/*.test.ts"],
+			"rules": {
+				"no-console": "off",
+				"sonarjs/no-duplicate-string": "off",
+				"@typescript-eslint/no-unsafe-argument": "off",
+				"@typescript-eslint/no-unsafe-assignment": "off",
+				"@typescript-eslint/no-explicit-any": "off",
+				"@typescript-eslint/use-unknown-in-catch-callback-variable": "off"
+			}
+		}
+	]
 }

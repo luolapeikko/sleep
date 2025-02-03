@@ -13,7 +13,8 @@ export default defineConfig({
 			include: ['src/**/*.ts'],
 			reporter: ['text'],
 		},
-		include: ['test/**/*.test.ts'],
+		include: ['./**/*.test.ts'],
+		exclude: ['dist', 'node_modules'],
 		pool: 'threads',
 	},
 });
