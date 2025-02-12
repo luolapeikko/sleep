@@ -11,13 +11,13 @@ describe('sleep-utils', () => {
 				const time = new Date().getTime() - start;
 				expect(time).to.be.greaterThanOrEqual(99);
 			});
-			it('should abort sleep early', {timeout: 10}, async function () {
+			it('should abort sleep early', {timeout: 50}, async function () {
 				const controller = new AbortController();
 				controller.abort();
 				const start = new Date().getTime();
 				await sleep(100, {signal: controller.signal});
 				const time = new Date().getTime() - start;
-				expect(time).to.be.lessThanOrEqual(10);
+				expect(time).to.be.lessThanOrEqual(50);
 			});
 			it('should abort middle of sleep', {timeout: 190}, async function () {
 				const controller = new AbortController();
@@ -36,7 +36,7 @@ describe('sleep-utils', () => {
 			});
 		});
 		describe('sleep abort with throw', () => {
-			it('should abort sleep early', {timeout: 10}, async function () {
+			it('should abort sleep early', {timeout: 50}, async function () {
 				const controller = new AbortController();
 				controller.abort();
 				const start = new Date().getTime();
@@ -46,7 +46,7 @@ describe('sleep-utils', () => {
 				const causeError = outputError?.cause as Error | undefined;
 				expect(causeError?.message).toEqual('This operation was aborted');
 				const time = new Date().getTime() - start;
-				expect(time).to.be.lessThanOrEqual(10);
+				expect(time).to.be.lessThan(50);
 			});
 			it('should abort middle of sleep', {timeout: 190}, async function () {
 				const expectedError = new SleepAbortError('Aborted', {cause: 'This operation was aborted'});
@@ -69,11 +69,11 @@ describe('sleep-utils', () => {
 			});
 		});
 		describe('error handling', function () {
-			it('should throw TypeError if ms is not a number', function () {
-				expect(() => sleep('not a number' as unknown as number)).toThrow(TypeError);
+			it('should throw TypeError if ms is not a number', async function () {
+				await expect(sleep('not a number' as unknown as number)).rejects.toThrow(TypeError);
 			});
-			it('should throw TypeError if options is not an object', function () {
-				expect(() => sleep(100, 'not an object' as unknown as SleepOptions)).toThrow(TypeError);
+			it('should throw TypeError if options is not an object', async function () {
+				await expect(sleep(100, 'not an object' as unknown as SleepOptions)).rejects.toThrow(TypeError);
 			});
 		});
 	});

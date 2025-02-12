@@ -13,6 +13,7 @@ export default defineConfig({
 			include: ['src/**/*.ts'],
 			reporter: ['text'],
 		},
+		setupFiles: ['./test/instrumentation.mts'],
 		include: ['./**/*.test.ts'],
 		exclude: ['dist', 'node_modules'],
 		pool: 'threads',
