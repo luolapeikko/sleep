@@ -5,6 +5,7 @@ import importPlugin from 'eslint-plugin-import';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import sonarjs from 'eslint-plugin-sonarjs';
 import tsParser from '@typescript-eslint/parser';
+import cspellESLintPluginRecommended from '@cspell/eslint-plugin/recommended';
 
 export default tseslint.config(
 	eslint.configs.recommended,
@@ -13,6 +14,7 @@ export default tseslint.config(
 	importPlugin.flatConfigs.recommended,
 	importPlugin.flatConfigs.typescript,
 	sonarjs.configs.recommended,
+	cspellESLintPluginRecommended,
 	prettierRecommended,
 	{
 		ignores: ['**/dist', '**/node_modules', '**/.github', '**/.nyc_output', '**/vite.config.mts', 'eslint.config.mjs'],

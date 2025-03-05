@@ -41,6 +41,7 @@
     },
     "homepage": "https://github.com/luolapeikko/sleep#readme",
     "devDependencies": {
+        "@cspell/eslint-plugin": "^8.17.5",
         "@eslint/js": "^9.21.0",
         "@luolapeikko/result-option": "^1.0.5",
         "@opentelemetry/api": "^1.9.0",
