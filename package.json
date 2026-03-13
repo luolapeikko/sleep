@@ -1,6 +1,6 @@
 {
   "name": "@luolapeikko/sleep",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Sleep promise with Abort support",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
