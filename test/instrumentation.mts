@@ -2,15 +2,12 @@ import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-
 import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-grpc';
 import {OTLPMetricExporter} from '@opentelemetry/exporter-metrics-otlp-grpc';
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-grpc';
-import {Resource} from '@opentelemetry/resources';
+import {resourceFromAttributes} from '@opentelemetry/resources';
 import {SimpleLogRecordProcessor} from '@opentelemetry/sdk-logs';
 import {PeriodicExportingMetricReader} from '@opentelemetry/sdk-metrics';
 import {NodeSDK} from '@opentelemetry/sdk-node';
 import {ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION} from '@opentelemetry/semantic-conventions';
-import * as dotenv from 'dotenv';
 import {afterAll, beforeAll} from 'vitest';
-
-dotenv.config();
 
 let sdk: NodeSDK | undefined;
 
@@ -27,7 +24,7 @@ beforeAll(() => {
 				exporter: new OTLPMetricExporter(),
 				exportIntervalMillis: 1000,
 			}),
-			resource: new Resource({
+			resource: resourceFromAttributes({
 				[ATTR_SERVICE_NAME]: 'sleep-unit-test',
 				[ATTR_SERVICE_VERSION]: '0.0.1',
 			}),

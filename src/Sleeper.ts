@@ -1,6 +1,6 @@
 import {Err, type IResult, Ok} from '@luolapeikko/result-option';
 import {type Span, SpanStatusCode, trace} from '@opentelemetry/api';
-import {type SleepOptions} from './options';
+import type {SleepOptions} from './options';
 import {buildError, SleepAbortError} from './SleepAbortError';
 
 const tracer = trace.getTracer('@luolapeikko/sleep');

@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import {defineConfig} from 'vite';
+import {defineConfig} from 'vitest/config';
 
 export default defineConfig({
 	test: {
@@ -13,7 +13,7 @@ export default defineConfig({
 			include: ['src/**/*.ts'],
 			reporter: ['text'],
 		},
-		setupFiles: ['./test/instrumentation.mts'],
+		setupFiles: ['dotenv/config', './test/instrumentation.mts'],
 		include: ['./**/*.test.ts'],
 		exclude: ['dist', 'node_modules'],
 		pool: 'threads',

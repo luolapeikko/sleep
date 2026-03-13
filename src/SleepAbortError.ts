@@ -3,7 +3,7 @@
  * @since v0.1.3
  */
 export class SleepAbortError extends Error {
-	constructor(message?: string, options?: ErrorOptions) {
+	public constructor(message?: string, options?: ErrorOptions) {
 		super(message, options);
 		this.name = 'SleepAbortError';
 		Error.captureStackTrace(this, this.constructor);

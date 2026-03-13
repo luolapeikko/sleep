@@ -1,7 +1,8 @@
-import {type IResult} from '@luolapeikko/result-option';
-import {type SleepOptions, type SleepThrowsOptions} from './options';
-import {type SleepAbortError} from './SleepAbortError';
+import type {IResult} from '@luolapeikko/result-option';
+import type {SleepOptions, SleepThrowsOptions} from './options';
+import type {SleepAbortError} from './SleepAbortError';
 import {Sleeper} from './Sleeper';
+
 export * from './options';
 export * from './SleepAbortError';
 
@@ -36,8 +37,8 @@ export function sleep(ms: number, options: SleepOptions = {}): Promise<void> {
  * @throws {SleepAbortError} if options.abortThrows is true and the signal is aborted
  * @since v0.1.3
  */
-export async function sleepResult(ms: number, options: SleepThrowsOptions): Promise<IResult<void, SleepAbortError | TypeError>>;
-export async function sleepResult(ms: number, options?: SleepOptions): Promise<IResult<void, TypeError>>;
-export async function sleepResult(ms: number, options?: SleepOptions): Promise<IResult<void, SleepAbortError | TypeError>> {
+export function sleepResult(ms: number, options: SleepThrowsOptions): Promise<IResult<void, SleepAbortError | TypeError>>;
+export function sleepResult(ms: number, options?: SleepOptions): Promise<IResult<void, TypeError>>;
+export function sleepResult(ms: number, options?: SleepOptions): Promise<IResult<void, SleepAbortError | TypeError>> {
 	return new Sleeper(ms, options).sleepsResult();
 }
