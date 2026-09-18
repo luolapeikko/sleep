@@ -19,7 +19,7 @@ beforeAll(() => {
 	if (process.env.ENABLE_INSTRUMENTATION === 'true') {
 		sdk = new NodeSDK({
 			instrumentations: [getNodeAutoInstrumentations()],
-			logRecordProcessors: [new SimpleLogRecordProcessor(new OTLPLogExporter())],
+			logRecordProcessors: [new SimpleLogRecordProcessor({exporter: new OTLPLogExporter()})],
 			metricReader: new PeriodicExportingMetricReader({
 				exporter: new OTLPMetricExporter(),
 				exportIntervalMillis: 1000,
