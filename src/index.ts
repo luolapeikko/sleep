@@ -68,7 +68,8 @@ export function sleepResult(ms: number, options: SleepOptions = {}): Promise<Cor
 	}
 	const abortListener = () => void handleAbort(sleepPromise, options);
 	const timeoutId = setTimeout(() => sleepPromise.resolve({success: true, value: undefined}), ms);
-	sleepPromise.finally(() => { // do cleanup
+	sleepPromise.finally(() => {
+		// do cleanup
 		options.signal?.removeEventListener('abort', abortListener);
 		clearTimeout(timeoutId);
 	});
