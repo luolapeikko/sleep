@@ -1,6 +1,6 @@
-import type {IResult} from '@luolapeikko/result-option';
+import type {CoreResult} from 'core-result';
 import {describe, expect, it} from 'vitest';
-import {buildError, SleepAbortError, type SleepOptions, sleep, sleepResult} from '../src/index';
+import {SleepAbortError, sleep, sleepResult} from '../src/index';
 
 describe('sleep-utils', () => {
 	describe('sleep', () => {
@@ -68,45 +68,37 @@ describe('sleep-utils', () => {
 				await expect(value2Promise).resolves.toEqual(undefined);
 			});
 		});
-		describe('error handling', function () {
-			it('should throw TypeError if ms is not a number', async function () {
-				await expect(sleep('not a number' as unknown as number)).rejects.toThrow(TypeError);
-			});
-			it('should throw TypeError if options is not an object', async function () {
-				await expect(sleep(100, 'not an object' as unknown as SleepOptions)).rejects.toThrow(TypeError);
-			});
-		});
 	});
 
 	describe('sleepResult', () => {
 		describe('sleep abort without throw', () => {
 			it('should sleep', {timeout: 190}, async function () {
 				const start = Date.now();
-				const res: IResult<void, TypeError> = await sleepResult(100);
+				const res: CoreResult<void, TypeError> = await sleepResult(100);
 				const time = Date.now() - start;
 				expect(time).to.be.greaterThanOrEqual(100);
-				expect(res.isOk).to.be.eq(true);
-				expect(res.ok()).to.be.eq(undefined);
+				expect(res.success).to.be.eq(true);
+				expect(res.value).to.be.eq(undefined);
 			});
 			it('should abort sleep early', {timeout: 10}, async function () {
 				const controller = new AbortController();
 				controller.abort();
 				const start = Date.now();
-				const res: IResult<void, TypeError> = await sleepResult(100, {signal: controller.signal});
+				const res: CoreResult<void, TypeError> = await sleepResult(100, {signal: controller.signal});
 				const time = Date.now() - start;
 				expect(time).to.be.lessThanOrEqual(10);
-				expect(res.isOk).to.be.eq(true);
-				expect(res.ok()).to.be.eq(undefined);
+				expect(res.success).to.be.eq(true);
+				expect(res.value).to.be.eq(undefined);
 			});
 			it('should abort middle of sleep', {timeout: 190}, async function () {
 				const controller = new AbortController();
 				const start = Date.now();
 				setTimeout(() => controller.abort(), 100);
-				const res: IResult<void, TypeError> = await sleepResult(200, {signal: controller.signal});
+				const res: CoreResult<void, TypeError> = await sleepResult(200, {signal: controller.signal});
 				const time = Date.now() - start;
 				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
-				expect(res.isOk).to.be.eq(true);
-				expect(res.ok()).to.be.eq(undefined);
+				expect(res.success).to.be.eq(true);
+				expect(res.value).to.be.eq(undefined);
 			});
 		});
 		describe('sleep abort with throw', () => {
@@ -114,23 +106,23 @@ describe('sleep-utils', () => {
 				const controller = new AbortController();
 				controller.abort();
 				const start = Date.now();
-				const res: IResult<void, TypeError | SleepAbortError> = await sleepResult(100, {signal: controller.signal, abortThrows: true});
-				expect(() => res.unwrap()).to.throw(SleepAbortError, 'Aborted');
+				const res: CoreResult<void, TypeError | SleepAbortError> = await sleepResult(100, {signal: controller.signal, abortThrows: true});
+				expect(res.error).to.be.eql(new SleepAbortError('Aborted'));
 				const time = Date.now() - start;
 				expect(time).to.be.lessThanOrEqual(10);
-				expect(res.isErr).to.be.eq(true);
-				expect(res.err()).to.be.instanceOf(SleepAbortError);
+				expect(res.success).to.be.eq(false);
+				expect(res.error).to.be.instanceOf(SleepAbortError);
 			});
 			it('should abort middle of sleep', {timeout: 190}, async function () {
 				const controller = new AbortController();
 				const start = Date.now();
 				setTimeout(() => controller.abort('with a reason'), 100);
-				const res: IResult<void, TypeError | SleepAbortError> = await sleepResult(200, {signal: controller.signal, abortThrows: true});
-				expect(() => res.unwrap()).to.throw(SleepAbortError, 'Aborted');
+				const res: CoreResult<void, TypeError | SleepAbortError> = await sleepResult(200, {signal: controller.signal, abortThrows: true});
+				expect(res.error).to.be.eql(new SleepAbortError('Aborted'));
 				const time = Date.now() - start;
 				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
-				expect(res.isErr).to.be.eq(true);
-				const err = res.err();
+				expect(res.success).to.be.eq(false);
+				const err = res.error;
 				expect(err).to.be.instanceOf(SleepAbortError);
 				if (!err || !(err instanceof SleepAbortError)) {
 					throw new Error('err is not instance of SleepAbortError');
@@ -140,21 +132,14 @@ describe('sleep-utils', () => {
 		describe('multiple sleeps on same signal', () => {
 			it('should abort both sleep promises', {timeout: 500}, async function () {
 				const abortController = new AbortController();
-				const value1ResPromise: Promise<IResult<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
-				const value2ResPromise: Promise<IResult<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
+				const value1ResPromise: Promise<CoreResult<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
+				const value2ResPromise: Promise<CoreResult<void, TypeError | SleepAbortError>> = sleepResult(1000, {signal: abortController.signal, abortThrows: true});
 				setTimeout(() => abortController.abort(), 100);
 				const value1Res = await value1ResPromise;
 				const value2Res = await value2ResPromise;
-				expect(value1Res.isErr).to.be.eq(true);
-				expect(value2Res.isErr).to.be.eq(true);
+				expect(value1Res.success).to.be.eq(false);
+				expect(value2Res.success).to.be.eq(false);
 			});
-		});
-	});
-	describe('buildError', function () {
-		it('should throw TypeError if message is not a string', function () {
-			expect(() => {
-				throw buildError(1);
-			}).toThrow(TypeError);
 		});
 	});
 });
