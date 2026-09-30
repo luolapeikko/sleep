@@ -4,12 +4,13 @@ import {SleepAbortError} from './SleepAbortError';
 
 export * from './SleepAbortError';
 
-function handleAbort(
-	sleepPromise: DeferredPromise<CoreResult<void, SleepAbortError>>,
-	options: SleepOptions,
-): DeferredPromise<CoreResult<void, SleepAbortError>> {
+function handleAbort<E extends Error>(
+	sleepPromise: DeferredPromise<CoreResult<void, E | SleepAbortError>>,
+	options: SleepOptions<E>,
+): DeferredPromise<CoreResult<void, E | SleepAbortError>> {
 	if (options.signal && options.abortThrows) {
-		sleepPromise.resolve({success: false, error: new SleepAbortError('Aborted', {cause: options.signal.reason})});
+		const abortError = new SleepAbortError('Aborted', {cause: options.signal.reason});
+		sleepPromise.resolve({success: false, error: typeof options.abortThrows === 'function' ? options.abortThrows(abortError) : abortError});
 	} else {
 		sleepPromise.resolve({success: true, value: undefined});
 	}
@@ -28,7 +29,7 @@ function handleAbort(
  * @throws {SleepAbortError} if options.abortThrows is true and the signal is aborted
  * @since v0.0.1
  */
-export async function sleep(ms: number, options: SleepOptions = {}): Promise<void> {
+export async function sleep(ms: number, options: SleepOptions<Error> = {}): Promise<void> {
 	const res = await sleepResult(ms, options);
 	if (!res.success) {
 		throw res.error;
@@ -39,11 +40,11 @@ export async function sleep(ms: number, options: SleepOptions = {}): Promise<voi
  * Options for sleep function
  * @since v0.1.3
  */
-export type SleepOptions = {
+export type SleepOptions<E extends Error> = {
 	/** optional AbortSignal to abort sleep */
 	signal?: AbortSignal;
 	/** if true, throw an error when aborted (default just resolves) */
-	abortThrows?: boolean;
+	abortThrows?: boolean | ((err: SleepAbortError) => E);
 };
 
 /**
@@ -61,8 +62,8 @@ export type SleepOptions = {
  * @throws {SleepAbortError} if options.abortThrows is true and the signal is aborted
  * @since v0.1.3
  */
-export function sleepResult(ms: number, options: SleepOptions = {}): Promise<CoreResult<void, SleepAbortError>> {
-	const sleepPromise = new DeferredPromise<CoreResult<void, SleepAbortError>>();
+export function sleepResult<E extends Error = SleepAbortError>(ms: number, options: SleepOptions<E> = {}): Promise<CoreResult<void, E>> {
+	const sleepPromise = new DeferredPromise<CoreResult<void, E | SleepAbortError>>();
 	if (options.signal?.aborted) {
 		return handleAbort(sleepPromise, options);
 	}

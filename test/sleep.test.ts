@@ -128,6 +128,12 @@ describe('sleep-utils', () => {
 					throw new Error('err is not instance of SleepAbortError');
 				}
 			});
+			it('should pickup error type from abortThrows callback', {timeout: 190}, async function () {
+				const controller = new AbortController();
+				controller.abort();
+				const res: CoreResult<void, TypeError> = await sleepResult(200, {signal: controller.signal, abortThrows: () => new TypeError('Aborted')});
+				expect(res.error).to.be.eql(new TypeError('Aborted'));
+			});
 		});
 		describe('multiple sleeps on same signal', () => {
 			it('should abort both sleep promises', {timeout: 500}, async function () {
