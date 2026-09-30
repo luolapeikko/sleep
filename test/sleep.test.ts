@@ -49,10 +49,10 @@ describe('sleep-utils', () => {
 				expect(time).to.be.lessThan(50);
 			});
 			it('should abort middle of sleep', {timeout: 190}, async function () {
-				const expectedError = new SleepAbortError('Aborted', {cause: 'This operation was aborted'});
+				const expectedError = new SleepAbortError('Aborted', {cause: new Error('This operation was aborted')});
 				const controller = new AbortController();
 				const start = Date.now();
-				setTimeout(() => controller.abort('This operation was aborted'), 100);
+				setTimeout(() => controller.abort(new Error('This operation was aborted')), 100);
 				await expect(sleep(200, {signal: controller.signal, abortThrows: true})).rejects.toEqual(expectedError);
 				const time = Date.now() - start;
 				expect(time).to.be.greaterThanOrEqual(99).and.lessThan(150);
@@ -116,7 +116,7 @@ describe('sleep-utils', () => {
 			it('should abort middle of sleep', {timeout: 190}, async function () {
 				const controller = new AbortController();
 				const start = Date.now();
-				setTimeout(() => controller.abort('with a reason'), 100);
+				setTimeout(() => controller.abort(new Error('with a reason')), 100);
 				const res: CoreResult<void, TypeError | SleepAbortError> = await sleepResult(200, {signal: controller.signal, abortThrows: true});
 				expect(res.error).to.be.eql(new SleepAbortError('Aborted'));
 				const time = Date.now() - start;

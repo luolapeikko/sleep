@@ -8,7 +8,7 @@ function handleAbort<E extends Error>(
 	sleepPromise: DeferredPromise<CoreResult<void, E | SleepAbortError>>,
 	options: SleepOptions<E>,
 ): DeferredPromise<CoreResult<void, E | SleepAbortError>> {
-	if (options.signal && options.abortThrows) {
+	if (options.signal && options.abortThrows && options.signal.reason instanceof Error) {
 		const abortError = new SleepAbortError('Aborted', {cause: options.signal.reason});
 		sleepPromise.resolve({success: false, error: typeof options.abortThrows === 'function' ? options.abortThrows(abortError) : abortError});
 	} else {
@@ -43,7 +43,7 @@ export async function sleep(ms: number, options: SleepOptions<Error> = {}): Prom
 export type SleepOptions<E extends Error> = {
 	/** optional AbortSignal to abort sleep */
 	signal?: AbortSignal;
-	/** if true, throw an error when aborted (default just resolves) */
+	/** if true, throw an error when aborted with Error instance as reason (default just resolves) */
 	abortThrows?: boolean | ((err: SleepAbortError) => E);
 };
 
