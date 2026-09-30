@@ -8,13 +8,14 @@ function handleSignalAbort(
 	sleepPromise: DeferredPromise<CoreResult<void, SleepAbortError>>,
 	options: SleepOptions,
 	timeoutId?: ReturnType<typeof setTimeout>,
-): void {
+): DeferredPromise<CoreResult<void, SleepAbortError>> {
 	clearTimeout(timeoutId);
 	if (options.signal && options.abortThrows) {
 		sleepPromise.resolve({success: false, error: new SleepAbortError('Aborted', {cause: options.signal.reason})});
 	} else {
 		sleepPromise.resolve({success: true, value: undefined});
 	}
+	return sleepPromise;
 }
 
 /**
@@ -65,12 +66,11 @@ export type SleepOptions = {
 export function sleepResult(ms: number, options: SleepOptions = {}): Promise<CoreResult<void, SleepAbortError>> {
 	const sleepPromise = new DeferredPromise<CoreResult<void, SleepAbortError>>();
 	if (options.signal?.aborted) {
-		handleSignalAbort(sleepPromise, options);
-		return sleepPromise;
+		return handleSignalAbort(sleepPromise, options);
 	}
 	const timeoutId = setTimeout(() => {
 		sleepPromise.resolve({success: true, value: undefined});
 	}, ms);
-	options.signal?.addEventListener('abort', () => handleSignalAbort(sleepPromise, options, timeoutId), {once: true});
+	options.signal?.addEventListener('abort', () => void handleSignalAbort(sleepPromise, options, timeoutId), {once: true});
 	return sleepPromise;
 }
