@@ -4,12 +4,10 @@ import {SleepAbortError} from './SleepAbortError';
 
 export * from './SleepAbortError';
 
-function handleSignalAbort(
+function handleAbort(
 	sleepPromise: DeferredPromise<CoreResult<void, SleepAbortError>>,
 	options: SleepOptions,
-	timeoutId?: ReturnType<typeof setTimeout>,
 ): DeferredPromise<CoreResult<void, SleepAbortError>> {
-	clearTimeout(timeoutId);
 	if (options.signal && options.abortThrows) {
 		sleepPromise.resolve({success: false, error: new SleepAbortError('Aborted', {cause: options.signal.reason})});
 	} else {
@@ -66,11 +64,14 @@ export type SleepOptions = {
 export function sleepResult(ms: number, options: SleepOptions = {}): Promise<CoreResult<void, SleepAbortError>> {
 	const sleepPromise = new DeferredPromise<CoreResult<void, SleepAbortError>>();
 	if (options.signal?.aborted) {
-		return handleSignalAbort(sleepPromise, options);
+		return handleAbort(sleepPromise, options);
 	}
-	const timeoutId = setTimeout(() => {
-		sleepPromise.resolve({success: true, value: undefined});
-	}, ms);
-	options.signal?.addEventListener('abort', () => void handleSignalAbort(sleepPromise, options, timeoutId), {once: true});
+	const abortListener = () => void handleAbort(sleepPromise, options);
+	const timeoutId = setTimeout(() => sleepPromise.resolve({success: true, value: undefined}), ms);
+	sleepPromise.finally(() => { // do cleanup
+		options.signal?.removeEventListener('abort', abortListener);
+		clearTimeout(timeoutId);
+	});
+	options.signal?.addEventListener('abort', abortListener, {once: true});
 	return sleepPromise;
 }
